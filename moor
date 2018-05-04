@@ -5,24 +5,27 @@ TAG=$2
 NAME=$3
 CMD=$4
 
+# Host
 BIN=~/.local/bin
+MOORHOME=.moor/home
+mkdir -p $HOME/$MOORHOME
+
+# Container
+WORKDIR=/workdir
 
 printf \
-'WORKDIR=/workdir
-GID=$(id -g $USER)
+'GID=$(id -g $USER)
 
 docker run -i --rm \
 --network=host \
 --ipc=host \
---workdir $WORKDIR \
---volume $PWD:$WORKDIR \
---volume /mnt/ram/$HOME:$HOME \
+--workdir '$WORKDIR' \
+--volume $PWD:'$WORKDIR' \
+--volume $HOME/'$MOORHOME':$HOME \
 --user $UID:$GID \
 --env HOME=$HOME \
 '$IMAGE':'$TAG' \
 '$CMD' \
 "$@"
 
-' > $BIN/$NAME
-
-chmod +x $BIN/$NAME
+' > $BIN/$NAME && chmod +x $BIN/$NAME
