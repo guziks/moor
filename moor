@@ -1,0 +1,28 @@
+#!/bin/bash
+
+IMAGE=$1
+TAG=$2
+NAME=$3
+CMD=$4
+
+BIN=~/.local/bin
+
+printf \
+'WORKDIR=/workdir
+GID=$(id -g $USER)
+
+docker run -i --rm \
+--network=host \
+--ipc=host \
+--workdir $WORKDIR \
+--volume $PWD:$WORKDIR \
+--volume /mnt/ram/$HOME:$HOME \
+--user $UID:$GID \
+--env HOME=$HOME \
+'$IMAGE':'$TAG' \
+'$CMD' \
+"$@"
+
+' > $BIN/$NAME
+
+chmod +x $BIN/$NAME
