@@ -1,5 +1,14 @@
 #!/bin/bash
 
+if [[ $# -lt 4 ]] ; then
+    echo 'Usage: moor <image> <tag> <host_cmd> <container_cmd>'
+    echo '  <image>         - docker image which contains required command'
+    echo '  <tag>           - docker image tag'
+    echo '  <host_cmd>      - how to name the command on the host'
+    echo '  <container_cmd> - command to run in the container'
+    exit 0
+fi
+
 IMAGE=$1
 TAG=$2
 NAME=$3
