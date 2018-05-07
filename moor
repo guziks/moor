@@ -78,8 +78,6 @@ function install {
     printf \
 '# Generated with moor
 
-UID=$(id -u $USER)
-GID=$(id -g $USER)
 IMAGEFULL='$IMAGEFULL'
 CMD='$CMD'
 WORKDIR='$WORKDIR'
@@ -91,7 +89,7 @@ docker run -i '$TTY' --rm '$PRIVILEGED' \
 --workdir $WORKDIR \
 --volume "$PWD":$WORKDIR \
 --volume $HOME/$MOORHOME:$HOME \
---user $UID:$GID \
+--user $(id -u $USER):$(id -g $USER) \
 --env HOME=$HOME \
 $IMAGEFULL \
 $CMD \
