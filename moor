@@ -1,19 +1,5 @@
 #!/bin/bash
 
-if [[ $# -lt 4 ]] ; then
-    echo 'Usage: moor <image> <tag> <host_cmd> <container_cmd>'
-    echo '  <image>         - docker image which contains required command'
-    echo '  <tag>           - docker image tag'
-    echo '  <host_cmd>      - how to name the command on the host'
-    echo '  <container_cmd> - command to run in the container'
-    exit 0
-fi
-
-IMAGE=$1
-TAG=$2
-NAME=$3
-CMD=$4
-
 # Host
 BIN=~/.local/bin
 MOORHOME=.moor/home
@@ -22,19 +8,135 @@ mkdir -p $HOME/$MOORHOME
 # Container
 WORKDIR=/workdir
 
-printf \
-'GID=$(id -g $USER)
+HELP_HEADER_INSTALL='Make command from docker image to be available on the host'
+HELP_HEADER_UPDATE='Update docker image of installed command'
+HELP_HEADER_REMOVE='Remove installed host command and corresponding docker image'
 
-docker run -i --rm \
+function print_help_main {
+    echo 'Install app from docker image to the host'
+    echo
+    echo 'Usage: moor COMMAND'
+    echo
+    echo 'Commands:'
+    echo '  install - '$HELP_HEADER_INSTALL
+    echo '  update  - '$HELP_HEADER_UPDATE
+    echo '  remove  - '$HELP_HEADER_REMOVE
+    echo
+    echo "If no command is specified 'install' is used."
+    echo "Run 'moor COMMAND --help' for more information on a command."
+    exit 0
+}
+
+function print_help_install {
+    echo $HELP_HEADER_INSTALL
+    echo
+    echo 'Usage: moor i|in|install image[:tag|@digest] host_cmd container_cmd'
+    echo '  image         - docker image which contains required command'
+    echo '  host_cmd      - how to name the command on the host'
+    echo '  container_cmd - command to run in the container'
+    exit 0
+}
+
+function print_help_update {
+    echo $HELP_HEADER_UPDATE
+    echo
+    echo 'Usage: moor u|up|update host_cmd'
+    echo '  host_cmd - command, which image to update'
+    exit 0
+}
+
+function print_help_remove {
+    echo $HELP_HEADER_REMOVE
+    echo
+    echo 'Usage: moor r|rm|remove host_cmd'
+    echo '  host_cmd - command to remove'
+    exit 0
+}
+
+function check_help {
+    ARG=$1
+    COMMAND=$2
+    case $ARG in
+        h|-h|--help|help) print_help_$COMMAND;;
+    esac
+}
+
+function install {
+    check_help $1 "install"
+
+    if [ ! $# -eq 3 ]; then
+        print_help_install
+    fi
+
+    IMAGEFULL=$1
+    NAME=$2
+    CMD=$3
+
+    TTY=-t # TODO add option
+    PRIVILEGED= # TODO add option
+
+    printf \
+'# Generated with moor
+
+UID=$(id -u $USER)
+GID=$(id -g $USER)
+IMAGEFULL='$IMAGEFULL'
+CMD='$CMD'
+WORKDIR='$WORKDIR'
+MOORHOME='$MOORHOME'
+
+docker run -i '$TTY' --rm '$PRIVILEGED' \
 --network=host \
 --ipc=host \
---workdir '$WORKDIR' \
---volume $PWD:'$WORKDIR' \
---volume $HOME/'$MOORHOME':$HOME \
+--workdir $WORKDIR \
+--volume "$PWD":$WORKDIR \
+--volume $HOME/$MOORHOME:$HOME \
 --user $UID:$GID \
 --env HOME=$HOME \
-'$IMAGE':'$TAG' \
-'$CMD' \
+$IMAGEFULL \
+$CMD \
 "$@"
 
 ' > $BIN/$NAME && chmod +x $BIN/$NAME
+}
+
+function get_image_full {
+    # host cmd name
+    name=$1
+    file=$BIN/$name
+    # find string containing image spec
+    image_full_spec=`grep IMAGEFULL= $file`
+    # parse image spec string to get image
+    IFS='=' read -ra image_full_split <<< "$image_full_spec"
+    image_full=${image_full_split[1]}
+    echo $image_full
+}
+
+function update {
+    check_help $1 "update"
+    if [ ! $# -eq 1 ]; then
+        print_help_update
+    fi
+    name=$1
+    image=$(get_image_full $name)
+    docker pull $image
+}
+
+function remove {
+    check_help $1 "remove"
+    if [ ! $# -eq 1 ]; then
+        print_help_update
+    fi
+    name=$1
+    image=$(get_image_full $name)
+    rm $BIN/$name
+    docker rmi $image
+}
+
+check_help $1 "main"
+case $1 in
+    i|in|install) shift; install $@;;
+    u|up|update) shift; update $@;;
+    r|rm|remove|uninstall) shift; remove $@;;
+    *) install $@;;
+esac
