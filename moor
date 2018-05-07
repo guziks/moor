@@ -125,7 +125,7 @@ function update {
 function remove {
     check_help $1 "remove"
     if [ ! $# -eq 1 ]; then
-        print_help_update
+        print_help_remove
     fi
     name=$1
     image=$(get_image_full $name)
