@@ -18,9 +18,9 @@ function print_help_main {
     echo 'Usage: moor COMMAND'
     echo
     echo 'Commands:'
-    echo '  install - '$HELP_HEADER_INSTALL
-    echo '  update  - '$HELP_HEADER_UPDATE
-    echo '  remove  - '$HELP_HEADER_REMOVE
+    echo '  install   '$HELP_HEADER_INSTALL
+    echo '  update    '$HELP_HEADER_UPDATE
+    echo '  remove    '$HELP_HEADER_REMOVE
     echo
     echo "If no command is specified 'install' is used."
     echo "Run 'moor COMMAND --help' for more information on a command."
@@ -30,10 +30,16 @@ function print_help_main {
 function print_help_install {
     echo $HELP_HEADER_INSTALL
     echo
-    echo 'Usage: moor i|in|install image[:tag|@digest] host_cmd container_cmd'
-    echo '  image         - docker image which contains required command'
-    echo '  host_cmd      - how to name the command on the host'
-    echo '  container_cmd - command to run in the container'
+    echo 'Usage: moor [i|in|install] image[:tag|@digest] host_cmd container_cmd'
+    echo '  image           Docker image which contains required command'
+    echo '  host_cmd        How to name the command on the host'
+    echo '  container_cmd   Command to run in the container'
+    echo
+    echo 'Options:'
+    echo '  --pipe          Allow installed command to accept input through pipe'
+    echo '                  (docker run --tty)'
+    echo '  --privileged    Give extended privileges to this container'
+    echo '                  (docker run --privileged)'
     exit 0
 }
 
@@ -41,7 +47,7 @@ function print_help_update {
     echo $HELP_HEADER_UPDATE
     echo
     echo 'Usage: moor u|up|update host_cmd'
-    echo '  host_cmd - command, which image to update'
+    echo '  host_cmd   Command, which image to update'
     exit 0
 }
 
@@ -49,7 +55,7 @@ function print_help_remove {
     echo $HELP_HEADER_REMOVE
     echo
     echo 'Usage: moor r|rm|remove host_cmd'
-    echo '  host_cmd - command to remove'
+    echo '  host_cmd   Command to remove'
     exit 0
 }
 
