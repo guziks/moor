@@ -72,11 +72,29 @@ function check_option_install_pipe {
     echo $DEFAULT_TTY
 }
 
+DEFAULT_PRIVILEGED=
+function check_option_install_privileged {
+    for arg in $@; do
+        if [ $arg = "--privileged" ]; then
+            echo $arg
+            return
+        fi
+    done
+    echo $DEFAULT_PRIVILEGED
+}
+
 function install {
     check_help $1 "install"
 
     TTY=$(check_option_install_pipe $@)
+    PRIVILEGED=$(check_option_install_privileged $@)
+
     if [ "$TTY" != "$DEFAULT_TTY" ]; then shift; fi
+    if [ "$PRIVILEGED" != "$DEFAULT_PRIVILEGED" ]; then shift; fi
+
+    # there are 2 required arguments: image, host_cmd
+    # and optional container_cmd, so there may be 2 or 3 args
+    if [ $# -lt 2 ] || [ $# -gt 3 ]; then
         print_help_install
     fi
 
