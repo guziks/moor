@@ -61,19 +61,28 @@ function check_help {
     esac
 }
 
+DEFAULT_TTY=-t
+function check_option_install_pipe {
+    for arg in $@; do
+        if [ $arg = "--pipe" ]; then
+            echo ""
+            return
+        fi
+    done
+    echo $DEFAULT_TTY
+}
+
 function install {
     check_help $1 "install"
 
-    if [ ! $# -eq 3 ]; then
+    TTY=$(check_option_install_pipe $@)
+    if [ "$TTY" != "$DEFAULT_TTY" ]; then shift; fi
         print_help_install
     fi
 
     IMAGEFULL=$1
     NAME=$2
     CMD=$3
-
-    TTY=-t # TODO add option
-    PRIVILEGED= # TODO add option
 
     printf \
 '# Generated with moor
