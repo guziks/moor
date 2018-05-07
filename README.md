@@ -7,9 +7,9 @@ Package manager that makes commands from docker image be available on the host.
 Download `moor` script and put it in your `PATH`, for example like this:
 
 ```
-$ wget https://github.com/guziks/moor/blob/master/moor && \
-mv moor ~/.local/bin && \
-chmod +x moor
+$ wget -O moor https://github.com/guziks/moor/raw/master/moor && \
+chmod +x moor && \
+mv moor ~/.local/bin/
 ```
 
 ## Usage
