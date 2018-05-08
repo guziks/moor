@@ -2,8 +2,8 @@
 
 # Host
 BIN=~/.local/bin
-MOORHOME=.moor/home
-mkdir -p $HOME/$MOORHOME
+MOORHOME=~/.moor/home
+mkdir -p $MOORHOME
 
 # Container
 WORKDIR=/workdir
@@ -126,7 +126,7 @@ docker run -i '$TTY' --rm '$PRIVILEGED' \
 --ipc=host \
 --workdir $WORKDIR \
 --volume "$PWD":$WORKDIR \
---volume $HOME/$MOORHOME:$HOME \
+--volume "$MOORHOME":"$HOME" \
 --user $(id -u $USER):$(id -g $USER) \
 --env HOME=$HOME \
 $IMAGEFULL \
