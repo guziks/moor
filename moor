@@ -52,7 +52,7 @@ function print_help_install {
     echo
     echo 'Options:'
     echo '  --pipe          Allow installed command to accept input through pipe'
-    echo '                  (docker run --tty)'
+    echo '                  (removes --tty option of docker run)'
     echo '  --privileged    Give extended privileges to this container'
     echo '                  (docker run --privileged)'
     exit 0
@@ -84,33 +84,27 @@ function check_help {
     esac
 }
 
-DEFAULT_TTY=-t
-function check_option_install_pipe {
+function check_option {
+    option=$1; shift
+    default=$1; shift
+    value=$1; shift
     for arg in $@; do
-        if [ $arg = "--pipe" ]; then
-            echo ""
+        if [ $arg = $option ]; then
+            echo $value
             return
         fi
     done
-    echo $DEFAULT_TTY
-}
-
-DEFAULT_PRIVILEGED=
-function check_option_install_privileged {
-    for arg in $@; do
-        if [ $arg = "--privileged" ]; then
-            echo $arg
-            return
-        fi
-    done
-    echo $DEFAULT_PRIVILEGED
+    echo $default
 }
 
 function install {
     check_help $1 "install"
 
-    TTY=$(check_option_install_pipe $@)
-    PRIVILEGED=$(check_option_install_privileged $@)
+    DEFAULT_TTY=-t
+    DEFAULT_PRIVILEGED=
+
+    TTY=$(check_option --pipe "$DEFAULT_TTY" " " $@)
+    PRIVILEGED=$(check_option --privileged "$DEFAULT_PRIVILEGED" --privileged $@)
 
     if [ "$TTY" != "$DEFAULT_TTY" ]; then shift; fi
     if [ "$PRIVILEGED" != "$DEFAULT_PRIVILEGED" ]; then shift; fi
