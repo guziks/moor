@@ -14,6 +14,7 @@ chmod +x moor && \
 MOORBIN=~/.moor/bin && \
 mkdir -p $MOORBIN && \
 mv moor $MOORBIN/ && \
+export PATH=$MOORBIN:$PATH && \
 echo -e "\n# Added by moor" >> ~/.bashrc && \
 echo "export MOORBIN=$MOORBIN" >> ~/.bashrc && \
 echo 'export PATH=$MOORBIN:$PATH' >> ~/.bashrc
