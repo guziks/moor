@@ -6,7 +6,7 @@ Package manager that makes commands from docker image be available on the host.
 
 Prerequisites: `docker`, `bash`, `curl`, `grep`.
 
-Download `moor` and put it in your `PATH`, everything else is optional, for example like this:
+Download `moor` and put it in your `PATH`, everything else is optional. Recommended command:
 
 ```
 $ curl -o moor https://raw.githubusercontent.com/guziks/moor/master/moor && \
@@ -20,7 +20,10 @@ echo "export MOORBIN=$MOORBIN" >> ~/.bashrc && \
 echo 'export PATH=$MOORBIN:$PATH' >> ~/.bashrc
 ```
 
-To upgrade from previous version:
+## Upgrade
+
+If you installed using previous command, use this to upgrade:
+
 ```
 $ curl -o moor https://raw.githubusercontent.com/guziks/moor/master/moor && \
 chmod +x moor && \
