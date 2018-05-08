@@ -2,13 +2,14 @@
 
 # where to put generated launchers
 if [ -z $MOORBIN ]; then
-    MOORBIN=~/.local/bin
+    MOORBIN=~/.moor/bin
 fi
 
 # $HOME for containerized app
 if [ -z $MOORHOME ]; then
     MOORHOME=~/.moor/home
 fi
+mkdir -p $MOORBIN
 mkdir -p $MOORHOME
 
 # workdir inside a container
