@@ -4,12 +4,26 @@ Package manager that makes commands from docker image be available on the host.
 
 ## Install
 
-Download `moor` script and put it in your `PATH`, for example like this:
+Prerequisites: `docker`, `bash`, `curl`, `grep`.
+
+Download `moor` and put it in your `PATH`, everything else is optional, for example like this:
 
 ```
-$ wget -O moor https://github.com/guziks/moor/raw/master/moor && \
+$ curl -o moor https://raw.githubusercontent.com/guziks/moor/master/moor && \
 chmod +x moor && \
-mv moor ~/.local/bin/
+MOORBIN=~/.moor/bin && \
+mkdir -p $MOORBIN && \
+mv moor $MOORBIN/ && \
+echo -e "\n# Added by moor" >> ~/.bashrc && \
+echo "export MOORBIN=$MOORBIN" >> ~/.bashrc && \
+echo 'export PATH=$MOORBIN:$PATH' >> ~/.bashrc
+```
+
+To upgrade from previous version:
+```
+$ curl -o moor https://raw.githubusercontent.com/guziks/moor/master/moor && \
+chmod +x moor && \
+mv moor $MOORBIN/
 ```
 
 ## Usage
