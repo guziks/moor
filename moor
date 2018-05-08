@@ -29,6 +29,12 @@ function print_help_main {
     echo '  update    '$HELP_HEADER_UPDATE
     echo '  remove    '$HELP_HEADER_REMOVE
     echo
+    echo 'Environment:'
+    echo '  MOORBIN   Where to put generated launchers'
+    echo '            (default: ~/.local/bin)'
+    echo '  MOORHOME  $HOME for containerized app'
+    echo '            (default: ~/.moor/home)'
+    echo
     echo "If no command is specified 'install' is used."
     echo
     echo "Run 'moor COMMAND --help' for more information on a command."
