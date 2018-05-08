@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# Host
-BIN=~/.local/bin
+# where to put generated launchers
+MOORBIN=~/.local/bin
+# $HOME for containerized app
 MOORHOME=~/.moor/home
 mkdir -p $MOORHOME
 
@@ -133,13 +134,13 @@ $IMAGEFULL \
 $CMD \
 "$@"
 
-' > $BIN/$NAME && chmod +x $BIN/$NAME
+' > $MOORBIN/$NAME && chmod +x $MOORBIN/$NAME
 }
 
 function get_image_full {
     # host cmd name
     name=$1
-    file=$BIN/$name
+    file=$MOORBIN/$name
     # find string containing image spec
     image_full_spec=`grep IMAGEFULL= $file`
     # parse image spec string to get image
@@ -165,7 +166,7 @@ function remove {
     fi
     name=$1
     image=$(get_image_full $name)
-    rm $BIN/$name
+    rm $MOORBIN/$name
     docker rmi $image
 }
 
