@@ -1,12 +1,17 @@
 #!/bin/bash
 
 # where to put generated launchers
-MOORBIN=~/.local/bin
+if [ -z $MOORBIN ]; then
+    MOORBIN=~/.local/bin
+fi
+
 # $HOME for containerized app
-MOORHOME=~/.moor/home
+if [ -z $MOORHOME ]; then
+    MOORHOME=~/.moor/home
+fi
 mkdir -p $MOORHOME
 
-# Container
+# workdir inside a container
 WORKDIR=/workdir
 
 HELP_HEADER_INSTALL='Make command from docker image to be available on the host'
