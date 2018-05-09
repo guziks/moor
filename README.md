@@ -38,7 +38,7 @@ Lets imagine you want to use `asciidoctor-pdf` application, but do not want to i
 $ moor asciidoctor/docker-asciidoctor ad-pdf asciidoctor-pdf
 ```
  
-This will create small launcher `~/.local/bin/ad-pdf` and finish immediately. This way `asciidoctor-pdf` is now awailable on the host as `ad-pdf`. As soon as `ad-pdf` is launched, docker image will get downloaded and `asciidoctor-pdf` will get run inside a container. Container runs with `--rm` option, so when `asciidoctor-pdf` exits, container is removed.
+This will create small launcher `$MOORBIN/ad-pdf` and finish immediately. This way `asciidoctor-pdf` is now awailable on the host as `ad-pdf`. As soon as `ad-pdf` is launched, docker image will get downloaded and `asciidoctor-pdf` will get run inside a container. Container runs with `--rm` option, so when `asciidoctor-pdf` exits, container is removed.
 
 Updating is a breeze:
 
