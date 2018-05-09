@@ -71,6 +71,16 @@ $ P="-p 8080:8080" python -m http.server 8080
 
 Notice how docker ports syntax inside `P` variable.
 
+### Docker run
+
+To supply any additional docker run options use `MOORRUN` variable, for example:
+
+```
+$ MOORRUN="--env URL=http://example.com" node app.js
+```
+
+There must be no spaces inside variables supplied this way.
+
 ### Signals
 
 `CTRL-C` works only for processes which explicitly react on `SIGINT`. If `CTRL-C` does not work for a command then it can be stopped with `CTRL-\` (`SIGQUIT` signal). The last resort:

@@ -163,6 +163,7 @@ $P \
 --volume "$MOORHOME":"$HOME" \
 --user $(id -u $USER):$(id -g $USER) \
 --env HOME=$HOME \
+$MOORRUN \
 $IMAGEFULL \
 $CMD \
 "$@"
