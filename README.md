@@ -48,13 +48,32 @@ $ moor --help
 
 ## Specificities
 
+### File system
+
 Installed commands run inside a container, so file system access is limited. This directories are available:
 
 * current working directory (determined using `$PWD`)
 * directory specified by `$MOORHOME` (by default: `~/.moor/home`)
 
-`CTRL-C` works only for processes which explicitly react on `SIGINT`. If `CTRL-C` does not work for a command then it can be stopped with `CTRL-\` (`SIGQUIT` signal). The last resort:
+### Network
 
+On Linux docker network type `host` is used, so all ports are automatically available. On Mac this type of network is not available, so you need to explisitly make port forwarding while launching installed command:
+
+```
+$ P="-p <port>:<port> [-p <port>:<port> ...]" <cmd> <args>
+```
+
+For example:
+
+```
+$ P="-p 8080:8080" python -m http.server 8080
+```
+
+Notice how docker ports syntax inside `P` variable.
+
+### Signals
+
+`CTRL-C` works only for processes which explicitly react on `SIGINT`. If `CTRL-C` does not work for a command then it can be stopped with `CTRL-\` (`SIGQUIT` signal). The last resort:
 
 ```
 $ docker ps # look for container name
