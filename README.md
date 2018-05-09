@@ -20,14 +20,10 @@ echo "export MOORBIN=$MOORBIN" >> ~/.bashrc && \
 echo 'export PATH=$MOORBIN:$PATH' >> ~/.bashrc
 ```
 
-## Upgrade
-
-If you installed using previous command, use this to upgrade:
+## Update
 
 ```
-$ curl -o moor https://raw.githubusercontent.com/guziks/moor/master/moor && \
-chmod +x moor && \
-mv moor $MOORBIN/
+$ moor selfupdate
 ```
 
 ## Usage
