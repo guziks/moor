@@ -7,7 +7,7 @@ Package manager that adds commands from docker images to the host.
 Prerequisites: `docker`, `bash`, `curl`, `grep`.
 
 ```
-$ curl -fsSL https://raw.githubusercontent.com/guziks/moor/master/install | bash
+$ eval "$(curl -fsSL https://raw.githubusercontent.com/guziks/moor/master/install)"
 ```
 
 ## Update

@@ -1,10 +1,16 @@
-#!/usr/bin/env bash
-
 MOORBIN=~/.moor/bin && \
 mkdir -p $MOORBIN && \
+
 curl -fsSL -o $MOORBIN/moor https://raw.githubusercontent.com/guziks/moor/master/moor && \
 chmod +x $MOORBIN/moor && \
+
 export PATH=$MOORBIN:$PATH && \
-echo -e "\n# Added by moor" >> ~/.bashrc && \
-echo "export MOORBIN=$MOORBIN" >> ~/.bashrc && \
-echo 'export PATH=$MOORBIN:$PATH' >> ~/.bashrc
+
+MOOREXPORTS="\n\n# Added by moor\n\
+export MOORBIN=$MOORBIN\n\
+export PATH="'$MOORBIN':'$PATH' && \
+
+case "$(uname -s)" in
+    Darwin*) printf "$MOOREXPORTS" >> ~/.bash_profile ;;
+    *) printf "$MOOREXPORTS" >> ~/.bashrc ;;
+esac
