@@ -18,6 +18,7 @@ WORKDIR=/workdir
 HELP_HEADER_INSTALL='Add command from docker image to the host'
 HELP_HEADER_UPDATE='Update docker image of installed command'
 HELP_HEADER_REMOVE='Remove installed host command and corresponding docker image'
+HELP_HEADER_SELFUPDATE='Download latest version of moor'
 
 function print_help_main {
     echo
@@ -26,15 +27,16 @@ function print_help_main {
     echo 'Install apps from docker images to the host'
     echo
     echo 'Commands:'
-    echo '  install   '$HELP_HEADER_INSTALL
-    echo '  update    '$HELP_HEADER_UPDATE
-    echo '  remove    '$HELP_HEADER_REMOVE
+    echo '  install      '$HELP_HEADER_INSTALL
+    echo '  update       '$HELP_HEADER_UPDATE
+    echo '  remove       '$HELP_HEADER_REMOVE
+    echo '  selfupdate   '$HELP_HEADER_SELFUPDATE
     echo
     echo 'Environment:'
-    echo '  MOORBIN   Where to put generated launchers'
-    echo '            (default: ~/.local/bin)'
-    echo '  MOORHOME  $HOME for containerized app'
-    echo '            (default: ~/.moor/home)'
+    echo '  MOORBIN      Where to put generated launchers'
+    echo '               (default: ~/.moor/bin)'
+    echo '  MOORHOME     $HOME for containerized app'
+    echo '               (default: ~/.moor/home)'
     echo
     echo "If no command is specified 'install' is used."
     echo
@@ -75,6 +77,16 @@ function print_help_remove {
     echo '  host_cmd   Command to remove'
     echo
     echo $HELP_HEADER_REMOVE
+    exit 0
+}
+
+function print_help_selfupdate {
+    echo
+    echo 'Usage: moor selfupdate'
+    echo
+    echo $HELP_HEADER_SELFUPDATE
+    echo
+    echo 'New version will be put into MOORBIN.'
     exit 0
 }
 
@@ -184,10 +196,21 @@ function remove {
     docker rmi $image
 }
 
+function selfupdate {
+    check_help $1 "selfupdate"
+    # no arguments accepted
+    if [ ! $# -eq 0 ]; then
+        print_help_selfupdate
+    fi
+    curl -# -o $MOORBIN/moor https://raw.githubusercontent.com/guziks/moor/master/moor && \
+    chmod +x $MOORBIN/moor
+}
+
 check_help $1 "main"
 case $1 in
     i|in|install) shift; install $@;;
     u|up|update) shift; update $@;;
     r|rm|remove|uninstall) shift; remove $@;;
+      su|selfupdate) shift; selfupdate $@;;
     *) install $@;;
 esac
