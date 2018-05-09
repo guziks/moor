@@ -136,6 +136,17 @@ function install {
     NAME=$2
     CMD=$3
 
+    case "$(uname -s)" in
+        Linux*) LINUX=yes ;;
+        *) LINUX=no ;;
+    esac
+
+    if [ LINUX = yes ]; then
+        NETWORK="--network=host"
+    else
+        NETWORK=""
+    fi
+
     printf \
 '# Generated with moor
 
@@ -144,8 +155,7 @@ CMD='$CMD'
 WORKDIR='$WORKDIR'
 MOORHOME='$MOORHOME'
 
-docker run -i '$TTY' --rm '$PRIVILEGED' \
---network=host \
+docker run -i '$TTY' --rm '$PRIVILEGED' '$NETWORK' \
 --ipc=host \
 --workdir $WORKDIR \
 --volume "$PWD":$WORKDIR \
