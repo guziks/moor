@@ -6,18 +6,8 @@ Package manager that adds commands from docker images to the host.
 
 Prerequisites: `docker`, `bash`, `curl`, `grep`.
 
-Download `moor` and put it in your `PATH`, everything else is optional. Recommended command:
-
 ```
-$ curl -o moor https://raw.githubusercontent.com/guziks/moor/master/moor && \
-chmod +x moor && \
-MOORBIN=~/.moor/bin && \
-mkdir -p $MOORBIN && \
-mv moor $MOORBIN/ && \
-export PATH=$MOORBIN:$PATH && \
-echo -e "\n# Added by moor" >> ~/.bashrc && \
-echo "export MOORBIN=$MOORBIN" >> ~/.bashrc && \
-echo 'export PATH=$MOORBIN:$PATH' >> ~/.bashrc
+$ curl -fsSL https://raw.githubusercontent.com/guziks/moor/master/install | bash
 ```
 
 ## Update
