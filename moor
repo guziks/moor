@@ -82,7 +82,8 @@ function print_help_remove {
 
 function print_help_selfupdate {
     echo
-    echo 'Usage: moor selfupdate'
+    echo 'Usage: moor su|selfupdate [branch]'
+    echo '  branch   Actual git repository branch to update to'
     echo
     echo $HELP_HEADER_SELFUPDATE
     echo
@@ -204,11 +205,16 @@ function remove {
 
 function selfupdate {
     check_help $1 "selfupdate"
-    # no arguments accepted
-    if [ ! $# -eq 0 ]; then
+    # may be one otional argument
+    if [ ! $# -le 1 ]; then
         print_help_selfupdate
     fi
-    curl -fsSL -o $MOORBIN/moor https://raw.githubusercontent.com/guziks/moor/master/moor && \
+    # if no branch specified then using 'master'
+    [ -z $1 ] \
+        && BRANCH=master \
+        || BRANCH=$1
+    DOWNLOAD_URL=https://raw.githubusercontent.com/guziks/moor/$BRANCH/moor
+    curl -fsSL -o $MOORBIN/moor $DOWNLOAD_URL && \
     chmod +x $MOORBIN/moor
 }
 
