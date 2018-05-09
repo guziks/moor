@@ -202,7 +202,7 @@ function selfupdate {
     if [ ! $# -eq 0 ]; then
         print_help_selfupdate
     fi
-    curl -# -o $MOORBIN/moor https://raw.githubusercontent.com/guziks/moor/master/moor && \
+    curl -fsSL -o $MOORBIN/moor https://raw.githubusercontent.com/guziks/moor/master/moor && \
     chmod +x $MOORBIN/moor
 }
 
