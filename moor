@@ -46,10 +46,11 @@ function print_help_main {
 
 function print_help_install {
     echo
-    echo 'Usage: moor [i|in|install] image[:tag|@digest] host_cmd container_cmd'
+    echo 'Usage: moor [i|in|install] image[:tag|@digest] host_cmd [container_cmd]'
     echo '  image           Docker image which contains required command'
     echo '  host_cmd        How to name the command on the host'
     echo '  container_cmd   Command to run in the container'
+    echo '                  (by default equals to host_cmd'
     echo
     echo $HELP_HEADER_INSTALL
     echo
@@ -135,7 +136,10 @@ function install {
 
     IMAGEFULL=$1
     NAME=$2
-    CMD=$3
+    # if no container_cmd specified then it equals to host_cmd
+    [ -z $3 ] \
+        && CMD=$2 \
+        || CMD=$3
 
     # if this is linux then use 'host' network
     case "$(uname -s)" in
