@@ -67,7 +67,8 @@ Installed commands run inside a container, so file system access is limited. Thi
 * current working directory (determined using `$PWD`)
 * directory specified by `$MOORHOME` (by default: `~/.moor/home`)
 
-`CTRL-C` works only for processes which explicitly react on `SIGINT`. If `CTRL-C` does not work for a command then it can be killed with:
+`CTRL-C` works only for processes which explicitly react on `SIGINT`. If `CTRL-C` does not work for a command then it can be stopped with `CTRL-\` (`SIGQUIT` signal). The last resort:
+
 
 ```
 $ docker ps # look for container name
