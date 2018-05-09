@@ -1,6 +1,6 @@
 ## About
 
-Package manager that makes commands from docker image be available on the host.
+Package manager that adds commands from docker images to the host.
 
 ## Install
 

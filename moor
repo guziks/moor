@@ -15,7 +15,7 @@ mkdir -p $MOORHOME
 # workdir inside a container
 WORKDIR=/workdir
 
-HELP_HEADER_INSTALL='Make command from docker image be available on the host'
+HELP_HEADER_INSTALL='Add command from docker image to the host'
 HELP_HEADER_UPDATE='Update docker image of installed command'
 HELP_HEADER_REMOVE='Remove installed host command and corresponding docker image'
 
