@@ -156,6 +156,7 @@ WORKDIR='$WORKDIR'
 MOORHOME='$MOORHOME'
 
 docker run -i '$TTY' --rm '$PRIVILEGED' '$NETWORK' \
+$P \
 --ipc=host \
 --workdir $WORKDIR \
 --volume "$PWD":$WORKDIR \
