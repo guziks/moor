@@ -52,6 +52,7 @@ function print_help_install {
     echo $HELP_HEADER_INSTALL
     echo
     echo 'Options:'
+    echo '  --pull          Pull image at install time (by default - at first launch)'
     echo '  --pipe          Allow installed command to accept input through pipe'
     echo '                  (removes --tty option of docker run)'
     echo '  --privileged    Give extended privileges to this container'
@@ -103,12 +104,15 @@ function install {
 
     DEFAULT_TTY=-t
     DEFAULT_PRIVILEGED=
+    DEFAULT_PULL=no
 
     TTY=$(check_option --pipe "$DEFAULT_TTY" " " $@)
     PRIVILEGED=$(check_option --privileged "$DEFAULT_PRIVILEGED" --privileged $@)
+    PULL=$(check_option --pull "$DEFAULT_PULL" yes $@)
 
     if [ "$TTY" != "$DEFAULT_TTY" ]; then shift; fi
     if [ "$PRIVILEGED" != "$DEFAULT_PRIVILEGED" ]; then shift; fi
+    if [ "$PULL" != "$DEFAULT_PULL" ]; then shift; fi
 
     # there are 2 required arguments: image, host_cmd
     # and optional container_cmd, so there may be 2 or 3 args
@@ -141,6 +145,10 @@ $CMD \
 "$@"
 
 ' > $MOORBIN/$NAME && chmod +x $MOORBIN/$NAME
+
+    if [ $PULL = yes ]; then
+        docker pull $IMAGEFULL
+    fi
 }
 
 function get_image_full {
