@@ -136,16 +136,11 @@ function install {
     NAME=$2
     CMD=$3
 
+    # if this is linux then use 'host' network
     case "$(uname -s)" in
-        Linux*) LINUX=yes ;;
-        *) LINUX=no ;;
+        Linux*) NETWORK="--network=host" ;;
+        *)      NETWORK="" ;;
     esac
-
-    if [ LINUX = yes ]; then
-        NETWORK="--network=host"
-    else
-        NETWORK=""
-    fi
 
     printf \
 '# Generated with moor
