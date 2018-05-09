@@ -59,3 +59,17 @@ For more usage information see:
 ```
 $ moor --help
 ```
+
+## Specificities
+
+Installed commands run inside a container, so file system access is limited. This directories are available:
+
+* current working directory (determined using `$PWD`)
+* directory specified by `$MOORHOME` (by default: `~/.moor/home`)
+
+`CTRL-C` works only for processes which explicitly react on `SIGINT`. If `CTRL-C` does not work for a command then it can be killed with:
+
+```
+$ docker ps # look for container name
+$ docker rm -f <container name>
+```
