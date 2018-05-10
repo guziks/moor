@@ -38,9 +38,9 @@ function print_help_main {
     echo '  MOORHOME     $HOME for containerized app'
     echo '               (default: ~/.moor/home)'
     echo
-    echo "If no command is specified 'install' is used."
+    echo "If no command is specified 'install' is used"
     echo
-    echo "Run 'moor COMMAND --help' for more information on a command."
+    echo "Run 'moor COMMAND --help' for more information on a command"
     exit 0
 }
 
@@ -50,7 +50,7 @@ function print_help_install {
     echo '  image                Docker image which contains required command'
     echo '  host_cmd             How to name the command on the host'
     echo '  container_cmd        Command to run in the container'
-    echo '                       (by default equals to host_cmd'
+    echo '                       (by default equals to host_cmd)'
     echo
     echo $HELP_HEADER_INSTALL
     echo
@@ -217,7 +217,7 @@ function remove {
 
 function selfupdate {
     check_help $1 "selfupdate"
-    # may be one otional argument
+    # may be one optional argument
     if [ ! $# -le 1 ]; then
         print_help_selfupdate
     fi
