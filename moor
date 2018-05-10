@@ -81,6 +81,9 @@ function print_help_update {
     echo '  host_cmd   Command, which image to update'
     echo
     echo $HELP_HEADER_UPDATE
+    echo
+    echo 'Options:'
+    echo '  --all      Update images of all installed launchers'
     exit 0
 }
 
@@ -219,12 +222,29 @@ function get_image_full {
 
 function update {
     check_help $1 "update"
-    if [ ! $# -eq 1 ]; then
-        print_help_update
+
+    DEFAULT_ALL="no"
+    ALL=$(check_option --all "$DEFAULT_ALL" "yes" $@)
+    if [ "$ALL" != "$DEFAULT_ALL" ]; then shift; fi
+
+    if [ "$ALL" = "no" ]; then
+        if [ ! $# -eq 1 ]; then
+            print_help_update
+        fi
+        name=$1
+        echo Updating $name ...
+        image=$(get_image_full $name)
+        docker pull $image
+    elif [ "$ALL" = "yes" ]; then
+        if [ ! $# -eq 0 ]; then
+            print_help_update
+        fi
+        for name in $(list); do
+            echo Updating $name ...
+            image=$(get_image_full $name)
+            docker pull $image
+        done
     fi
-    name=$1
-    image=$(get_image_full $name)
-    docker pull $image
 }
 
 function remove {
