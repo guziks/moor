@@ -61,6 +61,7 @@ function print_help_install {
     echo '  --privileged        Give extended privileges to this container'
     echo '                      (docker run --privileged)'
     echo '  --keep-entrypoint   Do not reset entrypoint'
+    echo '  --keep-home         Do not mount MOORHOME, leave container HOME as is'
     exit 0
 }
 
@@ -121,16 +122,19 @@ function install {
     DEFAULT_PRIVILEGED=
     DEFAULT_PULL=no
     DEFAULT_ENTRYPOINT="--entrypoint="
+    DEFAULT_ENV_HOME='--env HOME=$HOME'
 
     TTY=$(check_option --pipe "$DEFAULT_TTY" " " $@)
     PRIVILEGED=$(check_option --privileged "$DEFAULT_PRIVILEGED" --privileged $@)
     PULL=$(check_option --pull "$DEFAULT_PULL" yes $@)
     ENTRYPOINT=$(check_option --keep-entrypoint "$DEFAULT_ENTRYPOINT" " " $@)
+    ENV_HOME=$(check_option --keep-home "$DEFAULT_ENV_HOME" " " $@)
 
     if [ "$TTY" != "$DEFAULT_TTY" ]; then shift; fi
     if [ "$PRIVILEGED" != "$DEFAULT_PRIVILEGED" ]; then shift; fi
     if [ "$PULL" != "$DEFAULT_PULL" ]; then shift; fi
     if [ "$ENTRYPOINT" != "$DEFAULT_ENTRYPOINT" ]; then shift; fi
+    if [ "$ENV_HOME" != "$DEFAULT_ENV_HOME" ]; then shift; fi
 
     # there are 2 required arguments: image, host_cmd
     # and optional container_cmd, so there may be 2 or 3 args
@@ -159,14 +163,13 @@ CMD='$CMD'
 WORKDIR='$WORKDIR'
 MOORHOME='$MOORHOME'
 
-docker run -i '$TTY' --rm '$PRIVILEGED' '$NETWORK' '$ENTRYPOINT' \
+docker run -i '$TTY' --rm '$PRIVILEGED' '$NETWORK' '$ENTRYPOINT' '"$ENV_HOME"' \
 $P \
 --ipc=host \
 --workdir $WORKDIR \
 --volume "$PWD":$WORKDIR \
 --volume "$MOORHOME":"$HOME" \
 --user $(id -u $USER):$(id -g $USER) \
---env HOME=$HOME \
 $MOORRUN \
 $IMAGEFULL \
 $CMD \
