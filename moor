@@ -16,6 +16,7 @@ mkdir -p $MOORHOME
 WORKDIR=/workdir
 
 HELP_HEADER_INSTALL='Add command from docker image to the host'
+HELP_HEADER_LIST='Print currently installed launchers'
 HELP_HEADER_UPDATE='Update docker image of installed command'
 HELP_HEADER_REMOVE='Remove installed host command and corresponding docker image'
 HELP_HEADER_SELFUPDATE='Download latest version of moor'
@@ -28,6 +29,7 @@ function print_help_main {
     echo
     echo 'Commands:'
     echo '  install      '$HELP_HEADER_INSTALL
+    echo '  list         '$HELP_HEADER_LIST
     echo '  update       '$HELP_HEADER_UPDATE
     echo '  remove       '$HELP_HEADER_REMOVE
     echo '  selfupdate   '$HELP_HEADER_SELFUPDATE
@@ -62,6 +64,14 @@ function print_help_install {
     echo '                       (docker run --privileged)'
     echo '  --reset-entrypoint   Reset (clear) entrypoint'
     echo '  --keep-home          Do not mount MOORHOME, leave container HOME as is'
+    exit 0
+}
+
+function print_help_list {
+    echo
+    echo 'Usage: moor l|ls|list'
+    echo
+    echo $HELP_HEADER_LIST
     exit 0
 }
 
@@ -182,6 +192,19 @@ $CMD \
     fi
 }
 
+function list {
+    check_help $1 "list"
+    if [ ! $# -eq 0 ]; then
+            print_help_list
+        fi
+    launchers=$(ls $MOORBIN)
+    for launcher in $launchers; do
+        if [ $launcher != "moor" ]; then
+            echo $launcher
+        fi
+    done
+}
+
 function get_image_full {
     # host cmd name
     name=$1
@@ -233,6 +256,7 @@ function selfupdate {
 check_help $1 "main"
 case $1 in
     i|in|install) shift; install $@;;
+    l|ls|list) shift; list $@;;
     u|up|update) shift; update $@;;
     r|rm|remove|uninstall) shift; remove $@;;
       su|selfupdate) shift; selfupdate $@;;
