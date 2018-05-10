@@ -269,8 +269,9 @@ function selfupdate {
         && BRANCH=master \
         || BRANCH=$1
     DOWNLOAD_URL=https://raw.githubusercontent.com/guziks/moor/$BRANCH/moor
-    curl -fsSL -o $MOORBIN/moor $DOWNLOAD_URL && \
-    chmod +x $MOORBIN/moor
+    curl -fsSL -o $MOORBIN/moor_new $DOWNLOAD_URL && \
+    chmod +x $MOORBIN/moor_new && \
+    mv $MOORBIN/moor_new $MOORBIN/moor
 }
 
 check_help $1 "main"
