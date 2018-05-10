@@ -47,19 +47,20 @@ function print_help_main {
 function print_help_install {
     echo
     echo 'Usage: moor [i|in|install] image[:tag|@digest] host_cmd [container_cmd]'
-    echo '  image           Docker image which contains required command'
-    echo '  host_cmd        How to name the command on the host'
-    echo '  container_cmd   Command to run in the container'
-    echo '                  (by default equals to host_cmd'
+    echo '  image               Docker image which contains required command'
+    echo '  host_cmd            How to name the command on the host'
+    echo '  container_cmd       Command to run in the container'
+    echo '                      (by default equals to host_cmd'
     echo
     echo $HELP_HEADER_INSTALL
     echo
     echo 'Options:'
-    echo '  --pull          Pull image at install time (by default - at first launch)'
-    echo '  --pipe          Allow installed command to accept input through pipe'
-    echo '                  (removes --tty option of docker run)'
-    echo '  --privileged    Give extended privileges to this container'
-    echo '                  (docker run --privileged)'
+    echo '  --pull              Pull image at install time (by default - at first launch)'
+    echo '  --pipe              Allow installed command to accept input through pipe'
+    echo '                      (removes --tty option of docker run)'
+    echo '  --privileged        Give extended privileges to this container'
+    echo '                      (docker run --privileged)'
+    echo '  --keep-entrypoint   Do not reset entrypoint'
     exit 0
 }
 
@@ -119,14 +120,17 @@ function install {
     DEFAULT_TTY=-t
     DEFAULT_PRIVILEGED=
     DEFAULT_PULL=no
+    DEFAULT_ENTRYPOINT="--entrypoint="
 
     TTY=$(check_option --pipe "$DEFAULT_TTY" " " $@)
     PRIVILEGED=$(check_option --privileged "$DEFAULT_PRIVILEGED" --privileged $@)
     PULL=$(check_option --pull "$DEFAULT_PULL" yes $@)
+    ENTRYPOINT=$(check_option --keep-entrypoint "$DEFAULT_ENTRYPOINT" " " $@)
 
     if [ "$TTY" != "$DEFAULT_TTY" ]; then shift; fi
     if [ "$PRIVILEGED" != "$DEFAULT_PRIVILEGED" ]; then shift; fi
     if [ "$PULL" != "$DEFAULT_PULL" ]; then shift; fi
+    if [ "$ENTRYPOINT" != "$DEFAULT_ENTRYPOINT" ]; then shift; fi
 
     # there are 2 required arguments: image, host_cmd
     # and optional container_cmd, so there may be 2 or 3 args
@@ -155,7 +159,7 @@ CMD='$CMD'
 WORKDIR='$WORKDIR'
 MOORHOME='$MOORHOME'
 
-docker run -i '$TTY' --rm '$PRIVILEGED' '$NETWORK' \
+docker run -i '$TTY' --rm '$PRIVILEGED' '$NETWORK' '$ENTRYPOINT' \
 $P \
 --ipc=host \
 --workdir $WORKDIR \
@@ -163,7 +167,6 @@ $P \
 --volume "$MOORHOME":"$HOME" \
 --user $(id -u $USER):$(id -g $USER) \
 --env HOME=$HOME \
---entrypoint= \
 $MOORRUN \
 $IMAGEFULL \
 $CMD \
