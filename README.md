@@ -57,7 +57,7 @@ Installed commands run inside a container, so file system access is limited. Thi
 
 ### Network
 
-On Linux docker network type `host` is used, so all ports are automatically available. On Mac this type of network is not available, so you need to explisitly make port forwarding while launching installed command:
+On Linux docker network type `host` is used, so all ports are automatically available. On Mac this type of network is not available, so you need to explicitly make port forwarding while launching installed command:
 
 ```
 $ P="-p <port>:<port> [-p <port>:<port> ...]" <cmd> <args>
@@ -69,7 +69,7 @@ For example:
 $ P="-p 8080:8080" python -m http.server 8080
 ```
 
-Notice how docker ports syntax inside `P` variable.
+Notice how docker ports syntax used inside `P` variable.
 
 ### Docker run
 
@@ -80,3 +80,5 @@ $ MOORRUN="--env URL=http://example.com" node app.js
 ```
 
 There must be no spaces inside variables supplied this way.
+
+**TIP:** If you need environment variables with spaces inside, use `MOORRUN="--env-file <file-name>"`.
