@@ -161,6 +161,11 @@ function install {
     [ -z $3 ] \
         && CMD=$2 \
         || CMD=$3
+    
+    if [ $NAME = "moor" ]; then
+        echo "Won't install, as this will overwrite me"
+        exit 1
+    fi
 
     # if this is linux then use 'host' network
     case "$(uname -s)" in
