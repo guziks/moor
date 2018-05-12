@@ -80,12 +80,3 @@ $ MOORRUN="--env URL=http://example.com" node app.js
 ```
 
 There must be no spaces inside variables supplied this way.
-
-### Signals
-
-`CTRL-C` works only for processes which explicitly react on `SIGINT`. If `CTRL-C` does not work for a command then it can be stopped with `CTRL-\` (`SIGQUIT` signal). The last resort:
-
-```
-$ docker ps # look for container name
-$ docker rm -f <container name>
-```
