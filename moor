@@ -195,7 +195,7 @@ $P \
 --volume "$MOORHOME":"$HOME" \
 $MOORRUN \
 $IMAGEFULL \
-bash -c "$EXE"
+sh -c "$EXE"
 
 ' > $MOORBIN/$NAME && chmod +x $MOORBIN/$NAME
 
