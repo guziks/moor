@@ -180,6 +180,12 @@ IMAGEFULL='$IMAGEFULL'
 CMD='$CMD'
 WORKDIR='$WORKDIR'
 MOORHOME='$MOORHOME'
+HOSTUID=$(id -u $USER)
+HOSTGID=$(id -g $USER)
+
+EXE="$CMD $@ ; \
+chown $HOSTUID:$HOSTGID -R $WORKDIR ; \
+chown $HOSTUID:$HOSTGID -R $HOME"
 
 docker run -i '$TTY' --rm '$PRIVILEGED' '$NETWORK' '$ENTRYPOINT' '"$ENV_HOME"' \
 $P \
@@ -187,11 +193,9 @@ $P \
 --workdir $WORKDIR \
 --volume "$PWD":$WORKDIR \
 --volume "$MOORHOME":"$HOME" \
---user $(id -u $USER):$(id -g $USER) \
 $MOORRUN \
 $IMAGEFULL \
-$CMD \
-"$@"
+bash -c "$EXE"
 
 ' > $MOORBIN/$NAME && chmod +x $MOORBIN/$NAME
 
