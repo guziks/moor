@@ -175,6 +175,8 @@ function install {
         # split IMAGEFULL by ':' or '@' to get IMAGE
         IFS=$splitter read -ra IMAGEFULL_SPLIT <<< "$IMAGEFULL"
         NAME=${IMAGEFULL_SPLIT[0]}-shell
+        # replace '/' with '-'
+        NAME=$(tr -s / - <<< "$NAME")
         CMD="bash"
     elif [ $# -eq 2 ] || [ $# -eq 3 ]; then
     # there are 2 required arguments: image, host_cmd
