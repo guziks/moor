@@ -7,10 +7,10 @@ fi
 
 # $HOME for containerized app
 if [ -z $MOORHOME ]; then
-    MOORHOME=~/.moor/home
+    MOORHOME=.moor/home
 fi
 mkdir -p $MOORBIN
-mkdir -p $MOORHOME
+mkdir -p ~/$MOORHOME
 
 # workdir inside a container
 WORKDIR=/workdir
@@ -37,8 +37,9 @@ function print_help_main {
     echo 'Environment:'
     echo '  MOORBIN      Where to put generated launchers'
     echo '               (default: ~/.moor/bin)'
-    echo '  MOORHOME     $HOME for containerized app'
-    echo '               (default: ~/.moor/home)'
+    echo '  MOORHOME     $HOME for containerized app. Not a full path, but relative'
+    echo '               to $HOME of the user who runs installed command'
+    echo '               (default: .moor/home)'
     echo
     echo "If no command is specified 'install' is used"
     echo
@@ -207,7 +208,7 @@ function install {
 IMAGEFULL='$IMAGEFULL'
 CMD='$CMD'
 WORKDIR='$WORKDIR'
-MOORHOME='$MOORHOME'
+MOORHOME=$HOME/'$MOORHOME'
 HOSTUID=$(id -u $USER)
 HOSTGID=$(id -g $USER)
 
@@ -223,7 +224,7 @@ $P \
 --ipc=host \
 --workdir $WORKDIR \
 --volume "$PWD":$WORKDIR \
---volume "$MOORHOME":"$HOME" \
+--volume "$HOME/$MOORHOME":"$HOME" \
 $MOORRUN \
 $IMAGEFULL \
 sh -c "$EXE"

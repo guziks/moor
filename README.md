@@ -60,6 +60,10 @@ This will create launcher `<image>-shell` which will run `bash`. If an image doe
 $ moor node:alpine node-shell ash 
 ```
 
+## Portability
+
+Once created, launchers have no dependencies but docker, so they could be copied to other systems and they'll work just fine.
+
 ## Specificities
 
 ### File system
