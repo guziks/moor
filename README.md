@@ -46,6 +46,20 @@ For more usage information see:
 $ moor --help
 ```
 
+## Shell
+
+Before installing commands, it is convenient to install shell and explore what it is in that image. Quick way to install shell:
+
+```
+$ moor <image>
+```
+
+This will create launcher `<image>-shell` which will run `bash`. If an image does not have `bash`, you can always install any shell in the usual way, for example:
+
+```
+$ moor node:alpine node-shell ash 
+```
+
 ## Specificities
 
 ### File system
