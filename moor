@@ -60,9 +60,12 @@ function print_help_install {
     echo "If only image name is specified then '<image>-shell' launcher is created,"
     echo "which runs 'bash' in the container"
     echo
+    echo 'Following options change behavior of created launchers'
+    echo
     echo 'Options:'
     echo '  --chown              Chown volumes to root:root before executing command and'
     echo '                       to <your user>:<your group> after command has finished'
+    echo '                       CAUTION: current working directory is one of the volumes'
     echo '  --keep-home          Do not mount MOORHOME, leave container HOME as is'
     echo '  --keep-user          Do not run as your $USER, but as configured in the container'
     echo '  --pipe               Allow installed command to accept input through pipe'
