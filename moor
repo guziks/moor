@@ -44,7 +44,7 @@ function print_help_main {
     echo "If no command is specified 'install' is used"
     echo
     echo "Run 'moor COMMAND --help' for more information on a command"
-    exit 0
+    exit $1
 }
 
 function print_help_install {
@@ -71,7 +71,7 @@ function print_help_install {
     echo '                       (docker run --privileged)'
     echo '  --pull               Pull image at install time (by default - at first launch)'
     echo '  --reset-entrypoint   Reset (clear) entrypoint'
-    exit 0
+    exit $1
 }
 
 function print_help_list {
@@ -79,7 +79,7 @@ function print_help_list {
     echo 'Usage: moor l|ls|list'
     echo
     echo $HELP_HEADER_LIST
-    exit 0
+    exit $1
 }
 
 function print_help_update {
@@ -91,7 +91,7 @@ function print_help_update {
     echo
     echo 'Options:'
     echo '  --all      Update images of all installed launchers'
-    exit 0
+    exit $1
 }
 
 function print_help_remove {
@@ -100,7 +100,7 @@ function print_help_remove {
     echo '  host_cmd   Command to remove'
     echo
     echo $HELP_HEADER_REMOVE
-    exit 0
+    exit $1
 }
 
 function print_help_selfupdate {
@@ -111,7 +111,7 @@ function print_help_selfupdate {
     echo $HELP_HEADER_SELFUPDATE
     echo
     echo 'New version will be put into MOORBIN.'
-    exit 0
+    exit $1
 }
 
 function check_help {
@@ -210,7 +210,7 @@ function install {
             && CMD=$2 \
             || CMD=$3
     else
-        print_help_install
+        print_help_install 1
     fi
     
     if [ $NAME = 'moor' ]; then
@@ -279,7 +279,7 @@ sh -c "$EXE"
 function list {
     check_help $1 'list'
     if [ ! $# -eq 0 ]; then
-            print_help_list
+            print_help_list 1
         fi
     launchers=$(ls $MOORBIN)
     for launcher in $launchers; do
@@ -310,7 +310,7 @@ function update {
 
     if [ "$ALL" = 'no' ]; then
         if [ ! $# -eq 1 ]; then
-            print_help_update
+            print_help_update 1
         fi
         name=$1
         echo Updating $name ...
@@ -318,7 +318,7 @@ function update {
         docker pull $image
     elif [ "$ALL" = 'yes' ]; then
         if [ ! $# -eq 0 ]; then
-            print_help_update
+            print_help_update 1
         fi
         for name in $(list); do
             echo Updating $name ...
@@ -331,7 +331,7 @@ function update {
 function remove {
     check_help $1 'remove'
     if [ ! $# -eq 1 ]; then
-        print_help_remove
+        print_help_remove 1
     fi
     name=$1
     image=$(get_image_full $name)
@@ -343,7 +343,7 @@ function selfupdate {
     check_help $1 'selfupdate'
     # may be one optional argument
     if [ ! $# -le 1 ]; then
-        print_help_selfupdate
+        print_help_selfupdate 1
     fi
     # if no branch specified then using 'master'
     [ -z $1 ] \
