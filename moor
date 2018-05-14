@@ -103,6 +103,9 @@ function print_help_remove {
     echo '  host_cmd   Command to remove'
     echo
     echo $HELP_HEADER_REMOVE
+    echo
+    echo 'Options:'
+    echo '  --thin      Do not remove docker image, just launcher'
     exit $1
 }
 
@@ -330,13 +333,20 @@ function update {
 
 function remove {
     check_help $1 'remove'
+
+    DEFAULT_THIN='no'
+    THIN=$(check_option --thin "$DEFAULT_THIN" 'yes' $@)
+    if [ "$THIN" != "$DEFAULT_THIN" ]; then shift; fi
+
     if [ ! $# -eq 1 ]; then
         print_help_remove 1
     fi
     name=$1
     image=$(get_image_full $name)
     rm $MOORBIN/$name
-    docker rmi $image
+    if [ "$THIN" = 'no' ]; then
+        docker rmi $image
+    fi
 }
 
 function selfupdate {
