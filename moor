@@ -161,7 +161,7 @@ chown $HOSTUID:$HOSTGID -R $HOME' ;;
 function install {
     check_help $1 "install"
 
-    DEFAULT_TTY=-t
+    DEFAULT_TTY='--tty'
     DEFAULT_PRIVILEGED=
     DEFAULT_PULL=no
     DEFAULT_ENTRYPOINT=
@@ -248,16 +248,28 @@ HOSTGID=$(id -g $USER)
 
 EXE="'"$EXE"'"
 
-docker run -i '$TTY' --rm '$PRIVILEGED' '$NETWORK' '$ENTRYPOINT' '"$ENV_VOL_HOME"' '"$OPTION_USER"' \
-$P \
+docker run \
+--interactive \
+'$TTY' \
+--rm \
+'$PRIVILEGED' \
+'$ENTRYPOINT' \
 --ipc=host \
+'$NETWORK' \
 --workdir $WORKDIR \
 --volume "$PWD":$WORKDIR \
+'"$ENV_VOL_HOME"' \
+'"$OPTION_USER"' \
+$P \
 $MOORRUN \
 $IMAGEFULL \
 sh -c "$EXE"
 
-' > $MOORBIN/$NAME && chmod +x $MOORBIN/$NAME
+' > $MOORBIN/$NAME-tmp && \
+    grep -v '^\ \\$' $MOORBIN/$NAME-tmp > $MOORBIN/$NAME && \
+    rm $MOORBIN/$NAME-tmp && \
+    chmod +x $MOORBIN/$NAME 
+    # grep removes 'blank' lines, which contain only ' \'
 
     if [ $PULL = yes ]; then
         docker pull $IMAGEFULL
