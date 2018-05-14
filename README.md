@@ -105,9 +105,9 @@ There must be no spaces inside environmnent variables supplied this way.
 
 If installed command or even shell does not work as expected, try to install the command with one or several of these options:
 
-1. `--keep-user`
-2. `--keep-home`
-3. `--privileged`
-4. `--reset-entrypoint`
+1. `--reset-entrypoint`
+2. `--privileged`
+3. `--keep-user`
+4. `--keep-home`
 
 If `--keep-user` helped then consider installing the command with both `--keep-user` and `--chown` options. See `moor install --help`.

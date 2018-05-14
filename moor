@@ -234,8 +234,6 @@ chown $HOSTUID:$HOSTGID -R $HOME' ;;
         *) EXE='$CMD $@' ;;
     esac
 
-    # EXE=$(get_exe $CHOWN)
-
     printf \
 '# Generated with moor
 
