@@ -261,7 +261,7 @@ docker run \
 '"$ENV_VOL_HOME"' \
 '"$OPTION_USER"' \
 $P \
-$MOORRUN \
+$MRUN \
 $IMAGEFULL \
 sh -c "$EXE"
 

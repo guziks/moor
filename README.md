@@ -89,15 +89,15 @@ Notice how docker ports syntax used inside `P` variable.
 
 ## Docker run
 
-To supply any additional docker run options use `MOORRUN` variable, for example:
+To supply any additional docker run options use `MRUN` variable, for example:
 
 ```
-$ MOORRUN="--env URL=http://example.com" node app.js
+$ MRUN="--env URL=http://example.com" node app.js
 ```
 
 There must be no spaces inside variables supplied this way.
 
-**TIP:** If you need environment variables with spaces inside, use `MOORRUN="--env-file <file-name>"`.
+**TIP:** If you need environment variables with spaces inside, use `MRUN="--env-file <file-name>"`.
 
 ## Troubleshooting
 
