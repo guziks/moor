@@ -69,33 +69,35 @@ Once created, launchers have no dependencies but docker, so they could be copied
 Installed commands run inside a container, so file system access is limited. This directories are available:
 
 * current working directory (determined using `$PWD`)
-* directory specified by `$MOORHOME` (by default: `~/.moor/home`)
+* directory specified by `~/$MOORHOME` (by default: `~/.moor/home`)
+
+**Note**: MOORHOME is part of the path, relative to users HOME.
 
 ## Network
 
-On Linux docker network type `host` is used, so all ports are automatically available. On Mac this type of network is not available, so you need to explicitly make port forwarding while launching installed command:
+On Linux, docker network type `host` is used, so all ports are automatically available. On Mac this type of network is not available, so you need to explicitly make port forwarding while launching installed command:
 
 ```
-$ P="-p <port>:<port> [-p <port>:<port> ...]" <cmd> <args>
+$ MRUN="-p <port>:<port> [-p <port>:<port> ...]" <cmd> <args>
 ```
 
 For example:
 
 ```
-$ P="-p 8080:8080" python -m http.server 8080
+$ MRUN="-p 8080:8080" python -m http.server 8080
 ```
 
-Notice how docker ports syntax used inside `P` variable.
+Notice how docker ports syntax used inside `MRUN` variable.
 
 ## Docker run
 
-To supply any additional docker run options use `MRUN` variable, for example:
+You can use `MRUN` variable to supply any additional docker run options, for example:
 
 ```
 $ MRUN="--env URL=http://example.com" node app.js
 ```
 
-There must be no spaces inside variables supplied this way.
+There must be no spaces inside environmnent variables supplied this way.
 
 **TIP:** If you need environment variables with spaces inside, use `MRUN="--env-file <file-name>"`.
 

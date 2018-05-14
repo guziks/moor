@@ -260,7 +260,6 @@ docker run \
 --volume "$PWD":$WORKDIR \
 '"$ENV_VOL_HOME"' \
 '"$OPTION_USER"' \
-$P \
 $MRUN \
 $IMAGEFULL \
 sh -c "$EXE"
