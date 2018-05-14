@@ -61,13 +61,16 @@ function print_help_install {
     echo "which runs 'bash' in the container"
     echo
     echo 'Options:'
-    echo '  --pull               Pull image at install time (by default - at first launch)'
+    echo '  --chown              Chown volumes to root:root before executing command and'
+    echo '                       to <your user>:<your group> after command has finished'
+    echo '  --keep-home          Do not mount MOORHOME, leave container HOME as is'
+    echo '  --keep-user          Do not run as your $USER, but as configured in the container'
     echo '  --pipe               Allow installed command to accept input through pipe'
     echo '                       (removes --tty option of docker run)'
     echo '  --privileged         Give extended privileges to this container'
     echo '                       (docker run --privileged)'
+    echo '  --pull               Pull image at install time (by default - at first launch)'
     echo '  --reset-entrypoint   Reset (clear) entrypoint'
-    echo '  --keep-home          Do not mount MOORHOME, leave container HOME as is'
     exit 0
 }
 
@@ -142,6 +145,19 @@ function get_image_splitter {
     esac
 }
 
+function get_exe {
+    chown=$1
+    case "$chown" in
+        yes) printf '\
+chown 0:0 -R $WORKDIR ;\
+chown 0:0 -R $HOME ;\
+$CMD $@ ;\
+chown $HOSTUID:$HOSTGID -R $WORKDIR ;\
+chown $HOSTUID:$HOSTGID -R $HOME' ;;
+        *) printf '$CMD $@' ;;
+    esac
+}
+
 function install {
     check_help $1 "install"
 
@@ -149,19 +165,25 @@ function install {
     DEFAULT_PRIVILEGED=
     DEFAULT_PULL=no
     DEFAULT_ENTRYPOINT=
-    DEFAULT_ENV_HOME='--env HOME=$HOME'
+    DEFAULT_ENV_VOL_HOME='--env HOME=$HOME --volume "$HOME/$MOORHOME":"$HOME"'
+    DEFAULT_CHOWN=
+    DEFAULT_OPTION_USER='--user $(id -u $USER):$(id -g $USER)'
 
     TTY=$(check_option --pipe "$DEFAULT_TTY" " " $@)
     PRIVILEGED=$(check_option --privileged "$DEFAULT_PRIVILEGED" --privileged $@)
     PULL=$(check_option --pull "$DEFAULT_PULL" yes $@)
     ENTRYPOINT=$(check_option --reset-entrypoint "$DEFAULT_ENTRYPOINT" "--entrypoint=" $@)
-    ENV_HOME=$(check_option --keep-home "$DEFAULT_ENV_HOME" " " $@)
+    ENV_VOL_HOME=$(check_option --keep-home "$DEFAULT_ENV_VOL_HOME" " " $@)
+    CHOWN=$(check_option --chown "$DEFAULT_CHOWN" "yes" $@)
+    OPTION_USER=$(check_option --keep-user "$DEFAULT_OPTION_USER" " " $@)
 
     if [ "$TTY" != "$DEFAULT_TTY" ]; then shift; fi
     if [ "$PRIVILEGED" != "$DEFAULT_PRIVILEGED" ]; then shift; fi
     if [ "$PULL" != "$DEFAULT_PULL" ]; then shift; fi
     if [ "$ENTRYPOINT" != "$DEFAULT_ENTRYPOINT" ]; then shift; fi
-    if [ "$ENV_HOME" != "$DEFAULT_ENV_HOME" ]; then shift; fi
+    if [ "$ENV_VOL_HOME" != "$DEFAULT_ENV_VOL_HOME" ]; then shift; fi
+    if [ "$CHOWN" != "$DEFAULT_CHOWN" ]; then shift; fi
+    if [ "$OPTION_USER" != "$DEFAULT_OPTION_USER" ]; then shift; fi
 
     IMAGEFULL=$1
 
@@ -202,6 +224,18 @@ function install {
         *)      NETWORK="" ;;
     esac
 
+    case "$CHOWN" in
+        yes) EXE='\
+chown 0:0 -R $WORKDIR ;\
+chown 0:0 -R $HOME ;\
+$CMD $@ ;\
+chown $HOSTUID:$HOSTGID -R $WORKDIR ;\
+chown $HOSTUID:$HOSTGID -R $HOME' ;;
+        *) EXE='$CMD $@' ;;
+    esac
+
+    # EXE=$(get_exe $CHOWN)
+
     printf \
 '# Generated with moor
 
@@ -212,19 +246,13 @@ MOORHOME=$HOME/'$MOORHOME'
 HOSTUID=$(id -u $USER)
 HOSTGID=$(id -g $USER)
 
-EXE="\
-chown 0:0 -R $WORKDIR ;\
-chown 0:0 -R $HOME ;\
-$CMD $@ ;\
-chown $HOSTUID:$HOSTGID -R $WORKDIR ;\
-chown $HOSTUID:$HOSTGID -R $HOME"
+EXE="'"$EXE"'"
 
-docker run -i '$TTY' --rm '$PRIVILEGED' '$NETWORK' '$ENTRYPOINT' '"$ENV_HOME"' \
+docker run -i '$TTY' --rm '$PRIVILEGED' '$NETWORK' '$ENTRYPOINT' '"$ENV_VOL_HOME"' '"$OPTION_USER"' \
 $P \
 --ipc=host \
 --workdir $WORKDIR \
 --volume "$PWD":$WORKDIR \
---volume "$HOME/$MOORHOME":"$HOME" \
 $MOORRUN \
 $IMAGEFULL \
 sh -c "$EXE"
