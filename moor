@@ -66,6 +66,7 @@ function print_help_install {
     echo '  --chown              Chown volumes to root:root before executing command and'
     echo '                       to <your user>:<your group> after command has finished'
     echo '                       CAUTION: current working directory is one of the volumes'
+    echo '  --keep-entrypoint    Do not clear entrypoint'
     echo '  --keep-home          Do not mount MOORHOME, leave container HOME as is'
     echo '  --keep-user          Do not run as your $USER, but as configured in the container'
     echo '  --pipe               Allow installed command to accept input through pipe'
@@ -73,7 +74,6 @@ function print_help_install {
     echo '  --privileged         Give extended privileges to this container'
     echo '                       (docker run --privileged)'
     echo '  --pull               Pull image at install time (by default - at first launch)'
-    echo '  --reset-entrypoint   Reset (clear) entrypoint'
     exit $1
 }
 
@@ -167,7 +167,7 @@ function install {
     DEFAULT_TTY='--tty'
     DEFAULT_PRIVILEGED=
     DEFAULT_PULL='no'
-    DEFAULT_ENTRYPOINT=
+    DEFAULT_ENTRYPOINT='--entrypoint='
     DEFAULT_ENV_VOL_HOME='--env HOME=$HOME --volume "$HOME/$MOORHOME":"$HOME"'
     DEFAULT_CHOWN=
     DEFAULT_OPTION_USER='--user $(id -u $USER):$(id -g $USER)'
@@ -175,7 +175,7 @@ function install {
     TTY=$(check_option '--pipe' "$DEFAULT_TTY" '' $@)
     PRIVILEGED=$(check_option '--privileged' "$DEFAULT_PRIVILEGED" '--privileged' $@)
     PULL=$(check_option '--pull' "$DEFAULT_PULL" 'yes' $@)
-    ENTRYPOINT=$(check_option '--reset-entrypoint' "$DEFAULT_ENTRYPOINT" '--entrypoint=' $@)
+    ENTRYPOINT=$(check_option '--keep-entrypoint' "$DEFAULT_ENTRYPOINT" '' $@)
     ENV_VOL_HOME=$(check_option '--keep-home' "$DEFAULT_ENV_VOL_HOME" '' $@)
     CHOWN=$(check_option '--chown' "$DEFAULT_CHOWN" 'yes' $@)
     OPTION_USER=$(check_option '--keep-user' "$DEFAULT_OPTION_USER" '' $@)
