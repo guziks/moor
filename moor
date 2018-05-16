@@ -145,6 +145,26 @@ function check_option {
     echo $default
 }
 
+function check_value_option {
+    option=$1; shift
+    default=$1; shift
+    for arg in $@; do
+        IFS='=' read -ra option_split <<< "$arg"
+        option_name=${option_split[0]}
+        option_value=${option_split[1]}
+        if [ $option_name = $option ]; then
+            if [ $option_value ]; then
+                echo $option_value
+                return
+            else
+                echo_error "No '$option' value supplied"
+                exit 1
+            fi
+        fi
+    done
+    echo $default
+}
+
 function check_no_more_options {
     for arg in $@; do
         case $arg in
