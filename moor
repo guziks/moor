@@ -74,6 +74,7 @@ function print_help_install {
     echo '  --privileged         Give extended privileges to this container'
     echo '                       (docker run --privileged)'
     echo '  --pull               Pull image at install time (by default - at first launch)'
+    echo '  --user=<name>        Mount MOORHOME to /home/<name> in the container'
     exit $1
 }
 
@@ -199,11 +200,14 @@ chown $HOSTUID:$HOSTGID -R $HOME' ;;
 function install {
     check_help $1 'install'
 
+    DEFAULT_TARGET_USER='$USER'
+    TARGET_USER=$(check_value_option '--user' "$DEFAULT_TARGET_USER" $@)
+
     DEFAULT_TTY='--tty'
     DEFAULT_PRIVILEGED=
     DEFAULT_PULL='no'
     DEFAULT_ENTRYPOINT='--entrypoint='
-    DEFAULT_ENV_VOL_HOME='--env HOME=$HOME --volume "$HOME/$MOORHOME":"$HOME"'
+    DEFAULT_ENV_VOL_HOME='--env HOME=/home/'$TARGET_USER' --volume "$HOME/$MOORHOME":"/home/'$TARGET_USER'"'
     DEFAULT_CHOWN=
     DEFAULT_OPTION_USER='--user $(id -u $USER):$(id -g $USER)'
 
@@ -215,6 +219,7 @@ function install {
     CHOWN=$(check_option '--chown' "$DEFAULT_CHOWN" 'yes' $@)
     OPTION_USER=$(check_option '--keep-user' "$DEFAULT_OPTION_USER" '' $@)
 
+    if [ "$TARGET_USER" != "$DEFAULT_TARGET_USER" ]; then shift; fi
     if [ "$TTY" != "$DEFAULT_TTY" ]; then shift; fi
     if [ "$PRIVILEGED" != "$DEFAULT_PRIVILEGED" ]; then shift; fi
     if [ "$PULL" != "$DEFAULT_PULL" ]; then shift; fi
