@@ -120,6 +120,10 @@ function print_help_selfupdate {
     exit $1
 }
 
+function echo_error {
+    echo $@ 1>&2
+}
+
 function check_help {
     ARG=$1
     COMMAND=$2
@@ -139,6 +143,14 @@ function check_option {
         fi
     done
     echo $default
+}
+
+function check_no_more_options {
+    for arg in $@; do
+        case $arg in
+            -*) echo_error "Unsupported or redundant option '$arg'"; exit 1 ;;
+        esac
+    done
 }
 
 function get_image_splitter {
@@ -190,6 +202,8 @@ function install {
     if [ "$ENV_VOL_HOME" != "$DEFAULT_ENV_VOL_HOME" ]; then shift; fi
     if [ "$CHOWN" != "$DEFAULT_CHOWN" ]; then shift; fi
     if [ "$OPTION_USER" != "$DEFAULT_OPTION_USER" ]; then shift; fi
+
+    check_no_more_options $@
 
     IMAGEFULL=$1
 
@@ -281,9 +295,12 @@ sh -c "$EXE"
 
 function list {
     check_help $1 'list'
+    
+    check_no_more_options $@
+    
     if [ ! $# -eq 0 ]; then
-            print_help_list 1
-        fi
+        print_help_list 1
+    fi
     launchers=$(ls $MOORBIN)
     for launcher in $launchers; do
         if [ $launcher != 'moor' ]; then
@@ -310,6 +327,8 @@ function update {
     DEFAULT_ALL='no'
     ALL=$(check_option --all "$DEFAULT_ALL" 'yes' $@)
     if [ "$ALL" != "$DEFAULT_ALL" ]; then shift; fi
+    
+    check_no_more_options $@
 
     if [ "$ALL" = 'no' ]; then
         if [ ! $# -eq 1 ]; then
@@ -337,6 +356,8 @@ function remove {
     DEFAULT_THIN='no'
     THIN=$(check_option --thin "$DEFAULT_THIN" 'yes' $@)
     if [ "$THIN" != "$DEFAULT_THIN" ]; then shift; fi
+    
+    check_no_more_options $@
 
     if [ ! $# -eq 1 ]; then
         print_help_remove 1
@@ -351,6 +372,9 @@ function remove {
 
 function selfupdate {
     check_help $1 'selfupdate'
+    
+    check_no_more_options $@
+    
     # may be one optional argument
     if [ ! $# -le 1 ]; then
         print_help_selfupdate 1
